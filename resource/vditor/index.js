@@ -12,7 +12,7 @@ handler.on("open", (md) => {
     height: document.documentElement.clientHeight,
     outline: {
       enable: config.openOutline,
-      position: 'left',
+      position: config.outlinePosition,
     },
     toolbarConfig: {
       hide: config.hideToolbar
@@ -20,9 +20,9 @@ handler.on("open", (md) => {
     cache: {
       enable: false,
     },
-    mode: 'wysiwyg',
+    mode: config.mode,
     lang: language == 'zh-cn' ? 'zh_CN' : config.editorLanguage,
-    icon: "material",
+    icon: config.toolbarIcon,
     tab: '\t',
     preview: {
       theme: {

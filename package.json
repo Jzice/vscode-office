@@ -2,7 +2,7 @@
 	"name": "vscode-office",
 	"displayName": "Office Viewer(Markdown Editor)",
 	"description": "View word,excel files and using WYSIWYG editor for markdown.",
-	"version": "3.1.6",
+	"version": "3.1.7",
 	"publisher": "cweijan",
 	"icon": "images/icon.png",
 	"engines": {
@@ -448,9 +448,37 @@
 					"default": true,
 					"description": "Open markdown outline."
 				},
+				"vscode-office.mode": {
+					"type": "string",
+					"enum": [
+						"ir",
+                        "sv",
+                        "wysiwyg"
+                    ],
+					"default": "ir",
+					"description": "Markdown edit mode."
+				},
+				"vscode-office.toolbarIcon": {
+					"type": "string",
+					"enum": [
+						"material",
+                        "ant"
+                    ],
+					"default": "material",
+					"description": "Markdown toolbar icon."
+				},
+				"vscode-office.outlinePosition": {
+					"type": "string",
+					"enum": [
+						"left",
+                        "right"
+                    ],
+					"default": "right",
+					"description": "Markdown outline position."
+				},
 				"vscode-office.hideToolbar": {
 					"type": "boolean",
-					"default": false,
+					"default": true,
 					"description": "Hide markdown toolbar."
 				},
 				"vscode-office.previewCode": {
