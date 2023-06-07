@@ -100,8 +100,6 @@ export const toolbar = [
     },
     { name: 'upload', tipPosition: 'e' },
     "|",
-    // "edit-mode",  // 屏蔽掉, 现版本都是针对一种模式优化
-    "code-theme",
     // "|",
     "list",
     "ordered-list",
@@ -117,6 +115,8 @@ export const toolbar = [
     "redo",
     "|",
     "preview",
+    "edit-mode",  // 屏蔽掉, 现版本都是针对一种模式优化
+    "code-theme",
     "help",
 ]
 

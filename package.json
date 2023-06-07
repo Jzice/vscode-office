@@ -2,7 +2,7 @@
 	"name": "vscode-office",
 	"displayName": "Office Viewer(Markdown Editor)",
 	"description": "View word,excel files and using WYSIWYG editor for markdown.",
-	"version": "3.1.7",
+	"version": "3.1.8",
 	"publisher": "cweijan",
 	"icon": "images/icon.png",
 	"engines": {
@@ -452,9 +452,9 @@
 					"type": "string",
 					"enum": [
 						"ir",
-                        "sv",
-                        "wysiwyg"
-                    ],
+						"sv",
+						"wysiwyg"
+					],
 					"default": "ir",
 					"description": "Markdown edit mode."
 				},
@@ -462,8 +462,8 @@
 					"type": "string",
 					"enum": [
 						"material",
-                        "ant"
-                    ],
+						"ant"
+					],
 					"default": "material",
 					"description": "Markdown toolbar icon."
 				},
@@ -471,8 +471,8 @@
 					"type": "string",
 					"enum": [
 						"left",
-                        "right"
-                    ],
+						"right"
+					],
 					"default": "right",
 					"description": "Markdown outline position."
 				},
@@ -558,6 +558,26 @@
 					"default": false,
 					"description": "Using workspace path as markdown image base path."
 				},
+        "vscode-office.image.pathType": {
+          "description": "Markdown image path type",
+          "type": "string",
+          "default": "relative",
+          "enum": [
+            "relative",
+            "absolute",
+            "picgo"
+          ]
+        },
+        "vscode-office.image.dirPath": {
+          "type": "string",
+          "default": "",
+          "description": "The directory used to store the pictures, it must be in workspace. The default is the relative path where Markdown is located"
+        },
+        "vscode-office.picgo.configPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%config.configPath.description%"
+        },
 				"vscode-office.pasterImgPath": {
 					"type": "string",
 					"default": "image/${fileName}/${now}.png",
@@ -598,6 +618,7 @@
 		"markdown-it-toc-done-right": "^4.2.0",
 		"mustache": "^4.0.1",
 		"pdf-lib": "^1.11.2",
+    "picgo": "^1.4.14",
 		"puppeteer-core": "^1.20.0",
 		"vscode-html-to-docx": "^1.1.2"
 	}
