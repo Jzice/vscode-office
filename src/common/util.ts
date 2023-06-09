@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import { IImgInfo } from 'picgo/dist/utils/interfaces';
+import { IUploadName, IOutputUrl } from './picgo';
 
 enum Confirm {
     YES = "YES", NO = "NO"
@@ -34,5 +36,21 @@ export class Util {
     public static limitTitle(title: string): string {
         return title.length <= 30 ? title : title.substring(0, 25) + '...';
     }
+}
 
+export function formatString(tplString: string, data: IUploadName | IOutputUrl) {
+  const keys = Object.keys(data);
+  const values = keys.map((k) => data[k]);
+  return new Function(keys.join(','), 'return `' + tplString + '`').apply(null, values);
+}
+
+export function getUploadedName(imgInfo: IImgInfo): string {
+    let fullName;
+    if (!imgInfo.fileName) {
+        fullName = '';
+    } else {
+        fullName = imgInfo.fileName as string;
+    }
+    let basename = path.basename(fullName, path.extname(fullName));
+    return basename;
 }

@@ -4,6 +4,7 @@ import { basename, isAbsolute, parse, resolve } from 'path';
 import * as vscode from 'vscode';
 import { Hanlder } from '../common/handler';
 import { Util } from '../common/util';
+import VSPicgo from '../common/picgo';
 import { Holder } from '../service/markdown/holder';
 import { MarkdownService } from '../service/markdownService';
 
@@ -39,11 +40,11 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             localResourceRoots: [vscode.Uri.file("/"), ...this.getFolders()]
         }
         const handler = Hanlder.bind(webviewPanel, uri);
-        this.handleMarkdown(document, handler, folderPath)
-        handler.on('developerTool', () => vscode.commands.executeCommand('workbench.action.toggleDevTools'))
+        this.handleMarkdown(document, handler, folderPath, webviewPanel);
+        handler.on('developerTool', () => vscode.commands.executeCommand('workbench.action.toggleDevTools'));
     }
 
-    private handleMarkdown(document: vscode.TextDocument, handler: Hanlder, folderPath: vscode.Uri) {
+    private handleMarkdown(document: vscode.TextDocument, handler: Hanlder, folderPath: vscode.Uri, webviewPanel: vscode.WebviewPanel) {
 
         const uri = document.uri;
         const webview = handler.panel.webview;
@@ -51,6 +52,7 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
         let content = document.getText();
         const contextPath = `${this.extensionPath}/resource/vditor`;
         const rootPath = webview.asWebviewUri(vscode.Uri.file(`${contextPath}`)).toString();
+        let picgo: VSPicgo;
 
         Holder.activeDocument = document;
         handler.panel.onDidChangeViewState(e => {
@@ -64,6 +66,9 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
         });
 
         const config = vscode.workspace.getConfiguration("vscode-office");
+        if (config.image.pathType === 'picgo') {
+            picgo = new VSPicgo(webviewPanel);
+        } 
         handler.on("init", () => {
             const scrollTop = this.state.get(`scrollTop_${document.uri.fsPath}`, 0);
             handler.emit("open", {
@@ -97,8 +102,14 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             const imagePath = isAbsolute(fullPath) ? fullPath : `${resolve(uri.fsPath, "..")}/${relPath}`.replace(/\\/g, "/");
             wrieteFile(imagePath, Buffer.from(img, 'binary'))
             const fileName = parse(relPath).name;
-            vscode.env.clipboard.writeText(`![${fileName}](${relPath})`)
+            //picgo
+            if (config.image.pathType === 'picgo') {
+              picgo.upload(relPath);
+            } else {
+              vscode.env.clipboard.writeText(`![${fileName}](${relPath})`)
+            }
             vscode.commands.executeCommand("editor.action.clipboardPasteAction")
+
         }).on("editInVSCode", (full: boolean) => {
             const side = full ? vscode.ViewColumn.Active : vscode.ViewColumn.Beside;
             vscode.commands.executeCommand('vscode.openWith', uri, "default", side);
@@ -120,7 +131,7 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             vscode.commands.executeCommand('workbench.action.toggleDevTools')
         })
 
-        const basePath = vscode.workspace.getConfiguration("vscode-office").get<boolean>("workspacePathAsImageBasePath") ?
+        const basePath = config.get<boolean>("workspacePathAsImageBasePath") ?
             vscode.Uri.file(getWorkspacePath(folderPath)) : folderPath;
         const baseUrl = webview.asWebviewUri(basePath).toString().replace(/\?.+$/, '').replace('https://git', 'https://file');
         webview.html = Util.buildPath(
@@ -128,6 +139,7 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
                 .replace("{{rootPath}}", rootPath)
                 .replace("{{baseUrl}}", baseUrl),
             webview, contextPath);
+
     }
 
     private updateCount(content: string) {
